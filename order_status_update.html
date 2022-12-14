@@ -1,0 +1,111 @@
+<html><body style="font-family: Arial; font-size: 12px;">
+<div style="padding: 0 20px 20px 20px;">
+    <h2 style="font-size:22px; padding-bottom:4px; color:#cc6600; border-bottom:dashed 1px gray">{{ lang 'title' }}</h2>
+
+    <p>{{ lang 'hello' name=order.customer_name }}</p>
+
+    <p>An order you recently placed on our website has had its status changed.</p>
+
+    <p>{{{ lang 'message' id=order.id status=order.new_formatted_status }}}</p>
+
+    <h3 style="font-size:13px; color:#cc6600;">{{ lang 'details_title' }}</h3>
+    <table width="100%">
+        <tr>
+            <td style="font-family: Arial; font-size: 13px; font-weight: bold;" nowrap="nowrap" valign="top" width="25%">{{ lang 'order_total' }}:</td>
+            <td style="font-family: Arial; font-size: 13px;">{{ order.total.formatted }}</td>
+        </tr>
+        {{#or (if order.new_status '===' 'Refunded') (if order.new_status '===' 'Partially Refunded')}}{{#if order.refund.value }}<tr>
+    <td style="font-family: Arial; font-size: 13px; font-weight: bold;" nowrap="nowrap" valign="top" width="25%">{{ lang 'total_refund' }}:</td>
+    <td style="font-family: Arial; font-size: 13px;">{{ order.refund.formatted }}</td>
+</tr>
+{{/if}}{{/or}}
+        <tr>
+            <td style="font-family: Arial; font-size: 13px; font-weight: bold;" nowrap="nowrap" valign="top" width="25%">{{ lang 'date_placed' }}:</td>
+            <td style="font-family: Arial; font-size: 13px;">{{ order.date_placed.formatted }}</td>
+        </tr>
+        <tr>
+            <td style="font-family: Arial; font-size: 13px; font-weight: bold;" nowrap="nowrap" valign="top" width="25%">{{ lang 'payment_method' }}:</td>
+            <td style="font-family: Arial; font-size: 13px;">{{ order.payment_method }}</td>
+        </tr>
+    </table>
+
+    {{#or (if order.new_status '===' 'Shipped') (if order.new_status '===' 'Awaiting Shipment') (if order.new_status '===' 'Partially Shipped')}}
+        {{#if order.products}}<h3 style="font-size:13px; color:#cc6600;">{{# if order.new_status '===' 'Shipped'}}{{lang 'products_shipped'}}{{else}}{{lang 'products_to_be_shipped'}}{{/if}}</h3>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="font-family:Arial; font-size:12px; background-color:#020B6F; color:white; padding:5px; font-weight:bold" nowrap>Cart Items</td>
+        <td style="font-family:Arial; font-size:12px; background-color:#020B6F; color:white; padding:5px; font-weight:bold" nowrap="nowrap" align="center" width="100">SKU</td>
+        <td style="font-family:Arial; font-size:12px; background-color:#020B6F; color:white; padding:5px; font-weight:bold" nowrap="nowrap" align="center" width="100">Qty</td>
+    </tr>
+    {{#each order.products}}    <tr>
+        <td style="padding:5px; font-size:12px; border-bottom:solid 1px #CACACA">
+            <strong>{{ name }}</strong>
+        </td>
+        <td style="padding:5px; font-size:12px; border-bottom:solid 1px #CACACA" width="100" align="center">{{#if sku }}{{ sku }}{{else}}&nbsp;{{/if}}</td>
+        <td style="padding:5px; font-size:12px; border-bottom:solid 1px #CACACA" width="100" align="center">{{ quantity }}</td>
+    </tr>
+{{/each}}
+</table>
+{{/if}}{{/or}}
+
+    
+
+    {{#or (if order.new_status '===' 'Shipped') (if order.new_status '===' 'Partially Shipped') (if order.new_status '===' 'Awaiting Shipment') (if order.new_status '===' 'Completed') (if order.new_status '===' 'Awaiting Fulfillment') (if order.new_status '===' 'Awaiting Pickup')}}<h3 style="font-size:13px; color:#cc6600;">{{ lang 'tracking_title' }}</h3>
+{{#if order.tracking}}
+    <ul>
+        {{#each order.tracking}}
+            <li>
+                <p>
+                    <a href='{{link}}' target='_blank'>
+                        {{#if id }}
+                            {{id}}
+                        {{else}}
+                            {{lang 'tracking_label'}}
+                        {{/if}}
+                    </a>
+
+                    {{#if shipping_method }}
+                         ({{shipping_method}})
+                    {{/if}}
+                </p>
+            </li>
+        {{/each}}
+    </ul>
+{{else}}
+    <p>{{lang 'no_tracking_numbers'}}</p>
+{{/if}}
+{{/or}}
+
+    {{#if order.downloadable_products }}<h3 style="font-size:13px; color:#cc6600;">{{ lang 'downloadable_items_title' }}</h3>
+
+<table width="100%" id="CheckoutCartGrid" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="font-family:Arial; font-size:12px; background-color:#020B6F; color:white; padding:5px; font-weight:bold" nowrap>{{ lang 'cart_items' }}</td>
+        <td style="font-family:Arial; font-size:12px; background-color:#020B6F; color:white; padding:5px; font-weight:bold" nowrap="nowrap" width="100" align="center">Qty</td>
+        <td style="font-family:Arial; font-size:12px; background-color:#020B6F; color:white; padding:5px; font-weight:bold" nowrap="nowrap" width="100" align="right"></td>
+    </tr>
+</table>
+{{#each order.downloadable_products }}<table width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+		<td style="padding:5px; font-size:12px; border-bottom:solid 1px #CACACA">
+			<a href="{{ link }}">
+			<strong>{{ name }}</strong>
+			{{ options }}
+			</a>
+		</td>
+		<td style="padding:5px; font-size:12px; border-bottom:solid 1px #CACACA" width="100" align="center">{{ quantity }}</td>
+		<td style="padding:5px; font-size:12px; border-bottom:solid 1px #CACACA" width="100" align="right"><strong><a href="{{ link }}">{{ lang 'download' }}</a></strong></td>
+	</tr>
+</table>
+{{/each}}{{/if}}
+
+
+    <p><a href='{{ order.link }}'>Click here to view the status of your order</a></p>
+
+    <p style="font-family: lato, Arial, sans-serif; margin-top: 12px;"><strong>{{ store.name }}</strong> <br /> <a href="{{ store.path_normal }}">{{ store.path_normal }}</a></p>
+<hr style="font-family: lato, Arial, sans-serif; height: 1px; border-style: none; color: #444; background: #000; margin-top: 8px;" size="1" />
+<div style="font-family: lato, Arial, sans-serif; font-size: 11px; color: #444;">&nbsp;</div>
+</div>
+</body>
+</html>
