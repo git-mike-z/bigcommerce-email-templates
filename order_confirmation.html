@@ -1,0 +1,145 @@
+<table style="width: 100%;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td><img style="display: block; float: left; width: 105px; margin-bottom: 12px; clear: both;" src="{{ store.path }}/product_images/uploaded_images/flos-logo-black.jpg" alt="" /></td>
+</tr>
+</tbody>
+</table>
+<div>{{#if order.payment.is_test }}		<div style="width:100%; padding:10px; background-color:#FFF4EA">
+			<img src="{{ store.img_path }}/IcoError.gif" />&nbsp;
+			{{{ lang 'no_payment_taken_in_test_mode' }}}
+		</div>{{/if}}
+<h2 style="font-size: 22px; height: 30px; color: #333; border-bottom: dashed 1px gray; font-family: lato, Arial, sans-serif;">{{ lang 'title' }}</h2>
+<div style="width: 100%; padding: 10px; background-color: #fff4ea;"><img src="{{ store.img_path }}/info.png" alt="" />&nbsp; Your order ID is <strong>#{{ order.id }}</strong>. 
+{{#if order.customer_id}}A summary of your order is shown below. To view the status of your order <a href='{{ order.account_order_status_url }}'>click here</a>.{{/if}}
+</div>
+{{#if order.payment.gateway_amount.value '>' 0 }}<p>&nbsp;</p>
+<div style="font-family: lato, Arial, sans-serif; width: 100%; padding: 10px; background-color: #ffefef;"><img src="{{ store.img_path }}/IcoError.gif" alt="" />&nbsp; <span>%%LNG_</span><span>InvoicePendingPaymentText%%</span><!-- {{ lang 'payment_message' }} Details on how to pay are shown below. --></div>
+<h4 style="font-family: lato, Arial, sans-serif; width: 100%; padding: 10px; background-color: #ffefef;"><span style="font-family: arial, helvetica, sans-serif; font-size: medium;">Thank you for your order! Unfortunately, your payment was not approved by your bank. To resolve this issue, please contact the FLOS customer service team directly. You can reach us by phone at 888.952.9541, weekdays, 9AM-5PM EST. Or you may email us at e-shop@flosusa.com. Please reference order number&nbsp;<span>{{ order.id }}</span></span></h4>{{/if}} <br />
+<table style="width: 100%;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td id="Left" valign="top" width="50%">
+<h3 style="font-family: lato, Arial, sans-serif; font-size: 18px;">{{lang 'shipping_address_label'}}</h3>
+<div style="font-family: Arial; font-size: 12px;">                            {{#if order.meta.show_immediate_download }}
+                              {{ lang 'shipping_immediate_download' }}
+                            {{else}}
+                               {{#if order.meta.shipping_addresses_num '>' 1 }}
+                                    {{ lang 'shipment_to_multiple_addresses' }}
+                               {{else if order.meta.shipping_addresses_num '==' 1 }}
+                                   <p style="font-family: lato, Arial, sans-serif;"><strong>{{ order.shipping.address.first_name }} {{ order.shipping.address.last_name }}</strong> {{#if order.shipping.address.company '!=' '' }}<br>{{ order.shipping.address.company }}{{/if}} <br /> {{{ join order.shipping.address.address_lines '<br>'  }}}<br /> {{ order.shipping.address.city }}, {{ order.shipping.address.state }} {{ order.shipping.address.zip }}<br /> {{ order.shipping.address.country }}<br /> {{ order.shipping.address.phone }} {{#if order.shipping.address.custom_fields}}
+<dl>
+{{#each order.shipping.address.custom_fields }}
+    <dt>{{label}}</dt>
+    {{#compare value 'array' operator='typeof' }}
+      {{#each value}}
+        <dd>{{this}}</dd>
+      {{/each}}
+    {{else}}
+      <dd>{{value}}</dd>
+    {{/compare}}
+{{/each}}
+</dl>
+{{/if}}</p>
+                               {{/if}}
+                            {{/if}}
+</div>
+<!--
+					{{# if order.shipping.address.email }}
+<div>Email: {{ order.shipping.address.email }}</div>
+{{/if}}
+					--></td>
+<td id="Right" valign="top" width="50%">
+<h3 style="font-family: lato, Arial, sans-serif; font-size: 18px;">{{ lang 'billing_address_label' }}</h3>
+<div style="font-family: lato, Arial, sans-serif; font-size: 12px;">                            {{#if order.billing.is_managed_by_amazon }}
+                              {{ lang 'billing_address_managed_by_amazon' }}
+                            {{else}}
+                               <p style="font-family: lato, Arial, sans-serif;"><strong>{{ order.billing.address.first_name }} {{ order.billing.address.last_name }}</strong> {{#if order.billing.address.company '!=' '' }}<br>{{ order.billing.address.company }}{{/if}} <br /> {{{ join order.billing.address.address_lines '<br>'  }}}<br /> {{ order.billing.address.city }}, {{ order.billing.address.state }} {{ order.billing.address.zip }}<br /> {{ order.billing.address.country }}<br /> {{ order.billing.address.phone }} {{#if order.billing.address.custom_fields}}
+<dl>
+{{#each order.billing.address.custom_fields }}
+    <dt>{{label}}</dt>
+    {{#compare value 'array' operator='typeof' }}
+      {{#each value}}
+        <dd>{{this}}</dd>
+      {{/each}}
+    {{else}}
+      <dd>{{value}}</dd>
+    {{/compare}}
+{{/each}}
+</dl>
+{{/if}}</p>
+                            {{/if}}</div>
+<!--
+					{{# if order.billing.address.email }}
+<div>Email: {{ order.billing.address.email }}</div>
+{{/if}}
+					--></td>
+</tr>
+</tbody>
+</table>
+<br /><br /> {{#if order.payment.gateway_amount.value '>' 0 }}<h3 style="font-family: lato, Arial, sans-serif; font-size: 18px;">{{ lang 'payment_message' }} Details on how to pay are shown below.</h3>
+<div style="font-family: lato, Arial, sans-serif; font-size: 12px;">Once you've provided payment your order will be completed.: <br /><br /> {{ lang 'order_total' amount=order.payment.gateway_amount.formatted }} <br /><br /> {{ order.payment.offline_payment_message }}</div>{{/if}} {{#if order.customer_message '!=' '' }}
+<div style="font-size: 12px; font-family: lato, Arial, sans-serif;">
+<h3 style="font-family: lato, Arial, sans-serif; font-size: 18px;">{{ lang 'comment_label' }}</h3>
+{{ order.customer_message }}</div>
+{{/if}}
+<h3 style="font-size: 18px; font-family: lato, Arial, sans-serif;">Your Order Contains...</h3>
+<table id="CheckoutCartGrid" style="width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px; background-color: #666; color: white; padding: 5px; font-weight: bold;" nowrap="nowrap">Cart Items</td>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px; background-color: #666; color: white; padding: 5px; font-weight: bold;" nowrap="nowrap" width="100">SKU</td>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px; background-color: #666; color: white; padding: 5px; font-weight: bold;" nowrap="nowrap" width="100">Qty</td>
+<td style="font-size: 12px; background-color: #666; color: white; padding: 5px; font-weight: bold;" nowrap="nowrap" width="150">Item Price</td>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px; background-color: #666; color: white; padding: 5px; font-weight: bold;" align="right" nowrap="nowrap" width="200">Item Total</td>
+</tr>
+</tbody>
+</table> {{#each order.products}}{{#if address_lines }}<table id="CheckoutCartGrid" style="width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px; background-color: #666; color: white; padding: 5px; font-weight: bold;" nowrap="nowrap">    {{#if address_id }}
+      {{lang 'shipped_to' address=(truncate (join address_lines ', ') 70) }}
+    {{else}}
+      {{ lang 'download_available_after_payment' }}
+    {{/if}}</td>
+</tr>
+</tbody>
+</table>{{/if}}<table style="font-family: lato, Arial, sans-serif; border: 1px solid #c7d7db; width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="padding: 5px; font-family: lato, Arial, sans-serif; font-size: 12px; border-bottom: solid 1px #CACACA;"><strong>{{{ name }}}{{#if download_url}}(<a href="{{download_url}}">{{lang 'download_files'}}</a>){{/if}}</strong> {{#if options.length }}<br /><small>({{#eachIndex options}}{{index}}: {{item}}{{/eachIndex}})</small>{{/if}} {{#if attribute_lines }} <br /><small>({{join attribute_lines ', '}})</small>{{/if}} <br /> {{#if preorder.is_preorder }}
+                {{#if preorder.date.value }}
+                   ({{#replace '%%DATE%%' preorder.message}}
+                      {{preorder.date.formatted}}
+                    {{else}}
+                      {{preorder.message}}
+                    {{/replace}})
+                {{else}}
+                    ({{lang 'preorder' }})
+                {{/if}}
+            {{/if}}{{#each configurable_fields}}
+            <tr><td>{{name}}:</td><td>{{value}}</td></tr>
+        {{/each}}{{#if event.date.value }}<br /><span style="padding-left : 10px; padding-bottom:10px; font-size:11px; font-style:italic">( {{ event.name }}: {{ event.date.formatted }}) </span> {{/if}}</td>
+<td style="padding: 5px; font-size: 12px; font-family: lato, Arial, sans-serif; border-bottom: solid 1px #CACACA;" width="100">{{{ sku }}}</td>
+<td style="font-family: lato, Arial, sans-serif; padding: 5px; font-size: 12px; border-bottom: solid 1px #CACACA;" width="100">{{ quantity }}</td>
+<td style="padding: 5px; font-family: lato, Arial, sans-serif; font-size: 12px; border-bottom: solid 1px #CACACA;" width="150">{{ price.formatted }}</td>
+<td style="padding: 5px; font-family: lato, Arial, sans-serif; font-size: 12px; border-bottom: solid 1px #CACACA;" align="right" width="200"><strong>{{ total.formatted }}</strong></td>
+</tr>
+</tbody>
+</table>{{/each}} {{#each order.total_rows }}<table id="CheckoutCartGrid" style="width: 100%;" cellspacing="0" cellpadding="4">
+<tbody>
+<tr>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px;" align="right"><strong>{{ label }}:</strong></td>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px;" align="right" width="100"><strong>{{ price.formatted }}</strong></td>
+</tr>
+</tbody>
+</table>{{/each}} {{#if order.payment.provider_name }}<table id="CheckoutCartGrid" style="width: 100%;" cellspacing="0" cellpadding="4">
+<tbody>
+<tr>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px;" align="right">{{ lang 'payment_method' }}:</td>
+<td style="font-family: lato, Arial, sans-serif; font-size: 12px;" align="right" width="100">{{ order.payment.provider_name }}</td>
+</tr>
+</tbody>
+</table>{{/if}} <p style="font-family: lato, Arial, sans-serif; margin-top: 12px;"><strong>{{ store.name }}</strong> <br /> <a href="{{ store.path_normal }}">{{ store.path_normal }}</a></p>
+<hr style="font-family: lato, Arial, sans-serif; height: 1px; border-style: none; color: #444; background: #000; margin-top: 8px;" size="1" />
+<div style="font-family: lato, Arial, sans-serif; font-size: 11px; color: #444;">&nbsp;</div></div>
